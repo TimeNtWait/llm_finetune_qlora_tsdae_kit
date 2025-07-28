@@ -1,5 +1,6 @@
-# LLM Domain Adapter Kit: Fine-Tuning LLMs with TSDAE + QLoRA
 ## llm_finetune_qlora_tsdae_kit
+**LLM Domain Adapter Kit: Fine-Tuning LLMs with TSDAE + QLoRA**
+
 Гибкий и эффективный инструмент дообучения LLM-моделей под конкретные доменные задачи с использованием TSDAE и QLoRA.
 
 ### Описание
@@ -52,9 +53,20 @@ https://towardsdatascience.com/transforming-text-into-vectors-tsdaes-unsupervise
 TSDAE в сочетании с QLoRA позволяет эффективно обучить адаптационные LoRA-слои на больших объёмах даных используя ограниченные мощности.
 
 
+```plaintext
+.
+├── src/
+│   └── preprocess.py            # Пример скрипта для предобработки исходных данных     
+├── requirements.txt             # Зависимости
+├── README.md
+└── .gitignore
+```
+
 Установка:  
 Рекомендуется torch с поддержкой cuda ставить отдельно:  
 ```
 pip3 install torch==2.6.0+cu126 --index-url https://download.pytorch.org/whl/cu126
 pip3 install -r requirements.txt
 ```
+
+
