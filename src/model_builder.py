@@ -1,4 +1,4 @@
-# src/model.py
+# src/model_builder.py
 import torch
 import gc
 from transformers import AutoModel, AutoTokenizer, BitsAndBytesConfig
@@ -23,7 +23,7 @@ def create_peft_model():
     quantization_config = BitsAndBytesConfig(**QUANTIZATION_CONFIG)
     lora_config = LoraConfig(**LORA_CONFIG)
 
-    print(f"Загрузка базовой модели {MODEL_NAME}")
+    print(f"Загрузка базовой модели: {MODEL_NAME}")
     base_model = AutoModel.from_pretrained(
         MODEL_NAME,
         quantization_config=quantization_config,
