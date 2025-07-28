@@ -58,6 +58,7 @@ TSDAE в сочетании с QLoRA позволяет эффективно о�
 ├── src/
 │   ├── config.py                # Общий конфиг дообучения
 │   ├── create_dataset.py        # создание датасета (загрузка + предобработка)
+│   ├── model_builder.py         # Формирование модели с QLoRA и TSDAE
 │   └── preprocess.py            # Пример скрипта для предобработки исходных данных     
 ├── requirements.txt             # Зависимости
 ├── README.md

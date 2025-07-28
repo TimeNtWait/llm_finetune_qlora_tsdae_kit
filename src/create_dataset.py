@@ -12,7 +12,7 @@ import json
 import os
 
 from config import (
-    MIN_TEXT_LENGTH, MAX_TEXT_LENGTH, TEST_SIZE, RANDOM_STATE
+    MIN_TEXT_LENGTH, MAX_TEXT_LENGTH, TEST_SIZE
 )
 
 def load_dataset(file_path, file_format=None, **kwargs):
@@ -73,7 +73,7 @@ def create_datasets(texts, limit=None):
     """
     if limit:
         texts = texts[:limit]
-    train_texts, val_texts = train_test_split(texts, test_size=TEST_SIZE, random_state=RANDOM_STATE)
+    train_texts, val_texts = train_test_split(texts, test_size=TEST_SIZE, random_state=53)
     print(f"Подготовлено: {len(train_texts)} обучающих, {len(val_texts)} валидационных примеров")
     return train_texts, val_texts
 
