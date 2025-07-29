@@ -1,9 +1,4 @@
-# main.py
-"""
-Основной скрипт для запуска проекта.
-Здесь собирается весь процесс: подготовка данных, создание модели, обучение, оценка.
-Для запуска: python main.py --data_path path/to/processed.parquet --format parquet --limit 1000
-"""
+# src/main.py
 import torch
 import os
 
@@ -11,9 +6,7 @@ from create_dataset import load_dataset, preprocess_text, create_datasets, gener
 from model_builder import create_peft_model, create_sentence_transformer
 from train import train_model
 from evaluate import evaluate_model
-
 import gc
-
 
 def main(data_path, limit=None):
     print("Начинаем fine-tune TSDAE + QLoRA")
@@ -44,4 +37,5 @@ def main(data_path, limit=None):
 if __name__ == "__main__":
     # Путь к данным (важно чтобы в ДФ была колонка 'text')
     DEFAULT_DATA_PATH = '../datasets/processed_texts.parquet'
-    main(data_path=DEFAULT_DATA_PATH, limit=200)
+    # main(data_path=DEFAULT_DATA_PATH, limit=200) # Лимит для тетсирования, Если limit=None используются все данные
+    main(data_path=DEFAULT_DATA_PATH)

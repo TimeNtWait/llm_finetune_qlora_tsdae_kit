@@ -1,4 +1,4 @@
-# preprocess.py
+# src/preprocess.py
 """
 Пример скрипта для предобработки исходных данных.
 Этот скрипт загружает исходный датасет и производит предобработку (например если датасет это описания товаров, то объединяем названия товаров и характеристики в один текст).
@@ -25,7 +25,7 @@ def join_characteristic(x):
     return re.sub('[{}\[\]\(\)\"]', '', x.strip().replace('\\n', '; '))
 
 
-def preprocess_data(input_path, output_path):
+def preprocess_data(input_path: str, output_path: str):
     """
     Основная функция предобработки.
 
