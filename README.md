@@ -75,7 +75,7 @@ pip3 install -r requirements.txt
 ```
 
 
-#### Пример реализации:  
+#### Пример применения:  
 [Fine-Tuning E5-small под домен русскоязычных описаний товаров маркетплейсов](README_e5_fine_tune-ru-products.md)    
 **Базовая модель:** ["intfloat/multilingual-e5-small"](https://huggingface.co/intfloat/multilingual-e5-small)          
 **Итоговая модель:** ["TimeNtWait/e5-small-ru-products-qlora_v1"](https://huggingface.co/TimeNtWait/e5-small-ru-products-qlora_v1)      
