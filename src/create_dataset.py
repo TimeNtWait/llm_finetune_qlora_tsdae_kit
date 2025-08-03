@@ -7,54 +7,38 @@ from tqdm.auto import tqdm
 import json
 import os
 
-from config import (
-    MIN_TEXT_LENGTH, MAX_TEXT_LENGTH, TEST_SIZE
-)
+from config import MAX_LENGTH, MIN_TEXT_LENGTH, TEST_SIZE
 
 def load_dataset(file_path, file_format=None, **kwargs):
     """
-    Загрузка датафрейма. Ожидается колонка 'text'.
-    Если file_format не указан, определяется по расширению файла.
-
-    :param file_path: Путь к файлу с данными.
-    :param file_format: Формат файла ('parquet', 'csv', 'json'). Если None, определяется автоматически.
-    :param kwargs: Дополнительные аргументы для pd.read_* функций.
-    :return: Pandas DataFrame с загруженными данными.
+    В датафрейме обязательно должна быть колонка 'text'!
     """
     if file_format is None:
         ext = os.path.splitext(file_path)[1].lower().lstrip('.')
-        if ext in ['parquet', 'csv', 'json']:
+        if ext in ['parquet', 'csv']:
             file_format = ext
         else:
-            raise ValueError(f"Неизвестное расширение файла: {ext}. Укажите file_format явно.")
+            raise ValueError(f"Неизвестный формат файла, можно parquet, csv: {ext}")
 
     if file_format == 'parquet':
         df = pd.read_parquet(file_path, **kwargs)
     elif file_format == 'csv':
         df = pd.read_csv(file_path, **kwargs)
-    elif file_format == 'json':
-        df = pd.read_json(file_path, **kwargs)
     else:
-        raise ValueError(f"Неподдерживаемый формат: {file_format}")
+        raise ValueError(f"Неподдерживаемый формат, можно parquet, csv: {file_format}")
 
     if 'text' not in df.columns:
-        raise ValueError("Датасет должен содержать колонку 'text'")
+        raise ValueError("Датафрейм должен содержать колонку 'text'")
 
-    print(f"Загружен датасет из {file_path} ({len(df)} записей)")
+    print(f"Загружен датафрейм из {file_path}: {len(df)}")
     return df
 
 
 def preprocess_text(df):
-    """
-    Очистка уже подготовленного текста.
-    :param df: DataFrame с колонкой 'text'.
-    :return: Очищенный DataFrame.
-    """
     df = df.dropna(subset=['text'])
-    df = df[df['text'].str.strip() != '']
-    df = df[df['text'].str.len() > MIN_TEXT_LENGTH]
+    df = df[(df['text'].str.strip() != '')&(df['text'].str.len() > MIN_TEXT_LENGTH)]
     df['text'] = df['text'].astype(str)
-    df['text'] = df['text'].str[:MAX_TEXT_LENGTH]
+    df['text'] = df['text'].str[:MAX_LENGTH * 3]  # макс длина текста (примерно 3 символа на токен)
 
     print(f"После очистки: {len(df)} записей")
     return df
@@ -63,25 +47,17 @@ def preprocess_text(df):
 def create_datasets(texts, limit=None):
     """
     Создание обучающего и валидационного датасетов.
-    :param texts: Список текстов.
-    :param limit: Ограничение размера датасета (для тестирования).
-    :return: train_texts, val_texts.
     """
     if limit:
         texts = texts[:limit]
     train_texts, val_texts = train_test_split(texts, test_size=TEST_SIZE, random_state=53)
-    print(f"Подготовлено: {len(train_texts)} обучающих, {len(val_texts)} валидационных примеров")
+    print(f"Подготовлено train/val: {len(train_texts)} / {len(val_texts)}")
     return train_texts, val_texts
 
 
 def generate_noisy_datasets(train_texts, val_texts, batch_size=200):
     """
-    Генерация датасетов с зашумленными текстами для TSDAE.
-
-    :param train_texts: Обучающие тексты.
-    :param val_texts: Валидационные тексты.
-    :param batch_size: Размер батча для map.
-    :return: train_dataset, val_dataset (Dataset от HuggingFace).
+    Генерация датасета с зашумленными текстами для TSDAE.
     """
     from sentence_transformers.datasets import DenoisingAutoEncoderDataset
 

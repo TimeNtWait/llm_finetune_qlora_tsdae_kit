@@ -36,6 +36,6 @@ def main(data_path, limit=None):
 
 if __name__ == "__main__":
     # Путь к данным (важно чтобы в ДФ была колонка 'text')
-    DEFAULT_DATA_PATH = 'processed_texts.parquet'
-    # main(data_path=DEFAULT_DATA_PATH, limit=200) # Лимит для тетсирования, если limit=None используются все данные
-    main(data_path=DEFAULT_DATA_PATH)
+    DEFAULT_DATA_PATH = '../datasets/processed_texts.parquet'
+    main(data_path=DEFAULT_DATA_PATH, limit=200) # Лимит для тетсирования, если limit=None используются все данные
+    # main(data_path=DEFAULT_DATA_PATH)

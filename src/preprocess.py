@@ -1,24 +1,14 @@
 # src/preprocess.py
 """
 Пример скрипта для предобработки исходных данных.
-Этот скрипт загружает исходный датасет и производит предобработку (например если датасет это описания товаров, то объединяем названия товаров и характеристики в один текст).
-Итоговый датасет это parquet-файл с единственной колонкой 'text' который уже буедт использоваться при fine tune модели.
+Итог - датасет с единственной колонкой 'text' который уже буедт использоваться при fine tune модели.
 """
 
 import argparse
 import pandas as pd
 import re
 
-MIN_TEXT_LENGTH = 15  # Минимальная длина текста
-MAX_TEXT_LENGTH = 512 * 3  # Максимальная длина (примерно 3 символа на токен)
-
 def join_characteristic(x):
-    """
-    Объединение характеристик в строку.
-
-    :param x: Значение характеристики (строка или None).
-    :return: Очищенная строка.
-    """
     if x is None or pd.isna(x):
         return ""
     x = str(x).replace(':', ': ').replace(',', ', ')
@@ -26,12 +16,6 @@ def join_characteristic(x):
 
 
 def preprocess_data(input_path: str, output_path: str):
-    """
-    Основная функция предобработки.
-
-    :param input_path: Путь к исходному файлу (parquet).
-    :param output_path: Путь для сохранения результата.
-    """
     print(f"Загрузка данных из {input_path}...")
     df = pd.read_parquet(input_path)
 
@@ -43,9 +27,9 @@ def preprocess_data(input_path: str, output_path: str):
     # Очистка данных
     df = df.dropna(subset=['text'])
     df = df[df['text'].str.strip() != '']
-    df = df[df['text'].str.len() > MIN_TEXT_LENGTH]
+    df = df[df['text'].str.len() > 15]
     df['text'] = df['text'].astype(str)
-    df['text'] = df['text'].str[:MAX_TEXT_LENGTH]
+    df['text'] = df['text'].str[:512 * 3] # Максимальная длина (примерно 3 символа на токен)
 
     # Сохраняем только колонку 'text'
     df = df[['text']]

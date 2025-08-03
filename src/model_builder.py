@@ -6,17 +6,13 @@ from peft import get_peft_model, LoraConfig
 from sentence_transformers import SentenceTransformer, models
 
 from config import (
-    MODEL_NAME, MAX_LENGTH, DEVICE,
+    MODEL_NAME, MAX_LENGTH,
     QUANTIZATION_CONFIG, LORA_CONFIG
 )
-
+DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 def create_peft_model():
-    """
-    Создание базовой модели с QLoRA.
-
-    :return: PEFT модель.
-    """
+    # Создание базовой модели с QLoRA.
     torch.cuda.empty_cache()
     gc.collect()
 
@@ -47,12 +43,6 @@ def create_peft_model():
 
 
 def create_sentence_transformer(peft_model):
-    """
-    Создание SentenceTransformer на основе PEFT модели.
-
-    :param peft_model: PEFT модель.
-    :return: SentenceTransformer.
-    """
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
     word_embedding_model = models.Transformer(

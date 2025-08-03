@@ -13,8 +13,7 @@ import os
 from config import (
     MODEL_NAME, OUTPUT_DIR, NUM_EPOCHS, TRAIN_BATCH_SIZE, EVAL_BATCH_SIZE,
     GRAD_ACCUM_STEPS, LEARNING_RATE, WARMUP_RATIO, WEIGHT_DECAY,
-    LOGGING_STEPS, SAVE_STEPS, EVAL_STEPS, SAVE_TOTAL_LIMIT,
-    USE_EVALUATOR, USE_BF16, EVAL_SAMPLE_SIZE
+    LOGGING_STEPS, SAVE_STEPS, EVAL_STEPS, SAVE_TOTAL_LIMIT, EVAL_SAMPLE_SIZE
 )
 
 
@@ -99,12 +98,12 @@ def train_model(model, train_dataset, val_dataset):
         logging_steps=LOGGING_STEPS,
         save_steps=SAVE_STEPS,
         eval_steps=EVAL_STEPS,
-        eval_strategy="steps" if USE_EVALUATOR else "no",
+        eval_strategy="steps",
         save_strategy="steps",
-        load_best_model_at_end=USE_EVALUATOR,
-        metric_for_best_model='eval_val_evaluator_spearman_cosine' if USE_EVALUATOR else None,
-        greater_is_better=True if USE_EVALUATOR else None,
-        bf16=USE_BF16,
+        load_best_model_at_end=True,
+        metric_for_best_model='eval_val_evaluator_spearman_cosine',
+        greater_is_better=True,
+        bf16=True,
         dataloader_num_workers=0,
         gradient_checkpointing=False,
         dataloader_pin_memory=False,
@@ -115,15 +114,15 @@ def train_model(model, train_dataset, val_dataset):
         save_total_limit=SAVE_TOTAL_LIMIT
     )
 
-    evaluator = create_evaluator(val_dataset) if USE_EVALUATOR else None
+    evaluator = create_evaluator(val_dataset)
 
     trainer = SentenceTransformerTrainer(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
-        eval_dataset=val_dataset if USE_EVALUATOR else None,
+        eval_dataset=val_dataset ,
         loss=train_loss,
-        evaluator=evaluator if USE_EVALUATOR else None
+        evaluator=evaluator
     )
 
     print("Запуск обучения...")

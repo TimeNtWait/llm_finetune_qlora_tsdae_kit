@@ -10,19 +10,13 @@ from config import MODEL_NAME, OUTPUT_DIR, TEST_SAMPLE_SIZE, NUM_RANDOM_PAIRS, T
 
 
 def evaluate_model(model, val_texts):
-    """
-    Оценка качества обученной модели.
-
-    :param model: SentenceTransformer модель.
-    :param val_texts: Валидационные тексты.
-    """
     test_sample = np.random.choice(val_texts, min(TEST_SAMPLE_SIZE, len(val_texts)), replace=False)
     embeddings = model.encode(test_sample, convert_to_tensor=True, show_progress_bar=True)
     n_embeddings = len(embeddings)
 
     # Средняя косинусная схожесть между случайными парами
     if n_embeddings < 2:
-        print("Недостаточно данных для вычисления средней схожести (меньше 2 эмбеддингов)")
+        print("Недостаточно данных для вычисления (меньше 2 эмбеддингов)")
         avg_similarity = 0.0
         std_similarity = 0.0
     else:
@@ -38,7 +32,7 @@ def evaluate_model(model, val_texts):
     # Кластеризация: средняя схожесть с топ-K
     sample_size = min(50, n_embeddings)
     if sample_size < 2:
-        print("Недостаточно данных для вычисления топ-K схожести (меньше 2 эмбеддингов)")
+        print("Недостаточно данных для вычисления (меньше 2 эмбеддингов)")
         avg_topk_similarity = 0.0
     else:
         sample_embeddings = embeddings[:sample_size].cpu().numpy()
@@ -63,13 +57,7 @@ def evaluate_model(model, val_texts):
 
 
 def load_and_test_model(model_path=os.path.join(OUTPUT_DIR, 'final')):
-    """
-    Загрузка и тестирование модели.
-
-    :param model_path: Путь к сохраненной модели.
-    :return: Загруженная модель.
-    """
-    print(f" Загрузка модели из {model_path}")
+    print(f" Загрузка модели {model_path}")
     loaded_model = SentenceTransformer(model_path)
 
     test_texts = [
@@ -80,7 +68,7 @@ def load_and_test_model(model_path=os.path.join(OUTPUT_DIR, 'final')):
     ]
 
     embeddings = loaded_model.encode(test_texts)
-    print(f"Размерность embeddings: {embeddings.shape}")
+    print(f"Размерность эмбеддингов: {embeddings.shape}")
 
     similarity_matrix = cosine_similarity(embeddings)
     print("Матрица косинусной схожести:")
@@ -92,11 +80,7 @@ def load_and_test_model(model_path=os.path.join(OUTPUT_DIR, 'final')):
 
 
 def compare_with_base_model(trained_model_path=os.path.join(OUTPUT_DIR, 'final')):
-    """
-    Сравнение обученной модели с базовой.
-
-    :param trained_model_path: Путь к обученной модели.
-    """
+    # Сравнение обученной модели с базовой.
     test_texts = [
         "Смартфон Apple iPhone 14 128GB черный",
         "Телефон Apple iPhone 14 128 ГБ черного цвета",
